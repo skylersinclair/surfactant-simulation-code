@@ -1,4 +1,11 @@
 subroutine compute_surface_tension(nx, ny, surfactant, surface_tension)
+    
+    ! This file contains the equation of state. 
+    ! compute_surface_tension contains the eos
+    ! compute_surface_tension_d1 contains the first derivative of the eos
+    ! make sure the two match!
+    ! uncomment the one you want and comment out the rest.
+
     implicit none
     double precision :: beta, kappa, delta, mu, right_film_height
     common /surfactant_config/ beta, kappa, delta, mu, right_film_height
@@ -11,10 +18,14 @@ subroutine compute_surface_tension(nx, ny, surfactant, surface_tension)
 
     do iy = 1, ny
         do ix = 1, nx
+            !MULTILAYER EQU
              surface_tension(ix, iy) = (1.d0 + mu * surfactant(ix, iy))**(-3)
+            !LINEAR EQU
             !surface_tension(ix, iy) = 1.d0 - surfactant(ix, iy)
+            !SHREYAS NEW EOS 1
             !surface_tension(ix, iy) = 0.5d0*(1.2d0 - tanh(9*(surfactant(ix, iy) - 0.5d0)))
-           ! surface_tension(ix, iy) = (51.633d0 - 13.85d0*tanh(22.593d0*0.2d0*surfactant(ix,iy) - 3.2046d0))/27
+            !SHREYAS NEW EOS 2
+            ! surface_tension(ix, iy) = (51.633d0 - 13.85d0*tanh(22.593d0*0.2d0*surfactant(ix,iy) - 3.2046d0))/27
         end do
     end do
 end subroutine compute_surface_tension

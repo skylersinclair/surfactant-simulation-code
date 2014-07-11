@@ -82,10 +82,10 @@ def setrun(claw_pkg='classic'):
     probdata.add_param('film_bc_options', ['13', '13', '13', '13'])
     probdata.add_param('surfactant_bc_options', ['1', '1', '1', '1'])
     
-    probdata.add_param('beta', 0.42, 'gravitational constant')  # Estimated value: beta=.271
-    probdata.add_param('kappa', 0.019, 'capillarity')  # Estimated value: kappa=.013
-    probdata.add_param('delta', 3*10**(-5), 'surfactant diffusivity')
-    probdata.add_param('mu', 1.25,  'surface tension parameter: sigma = (1+mu*Gamma)**(-3)')
+    probdata.add_param('beta', 1.2, 'gravitational constant')  # Estimated value: beta=.271
+    probdata.add_param('kappa', 0.0066, 'capillarity')  # Estimated value: kappa=.013
+    probdata.add_param('delta', 0.00032, 'surfactant diffusivity')
+    probdata.add_param('mu', 1.33,  'surface tension parameter: sigma = (1+mu*Gamma)**(-3)') # material parameter eta = sigma s/(sigma 0 - sigma s)
     
     # IS THIS BEING USED? ALSO, TYPO?
     probdata.add_param('right_fllm_height', 0.05)
@@ -108,10 +108,10 @@ def setrun(claw_pkg='classic'):
     
     # Setting timestep information
     clawdata.t0 = 0.0
-    clawdata.dt_initial = .001 # WHY SO SMALL?
+    clawdata.dt_initial = .0002 # WHY SO SMALL?
     clawdata.dt_variable = 0 # 0 or 1 if can vary or not
-    clawdata.tfinal = 1.0
-    clawdata.nout = 50 # Either number of timesteps output 
+    clawdata.tfinal = 40.0
+    clawdata.nout = 160 # Either number of timesteps output 
     # or every nout, output timestep (check later)
 
     clawdata.verbosity = 1
@@ -122,7 +122,7 @@ def setrun(claw_pkg='classic'):
     clawdata.max_steps = 10000 # CHECK
 
     clawdata.src_split = 1 
-    clawdata.mbc = 2 # Something about boundary conditions (?)
+    clawdata.mbc = 2 # Number of ghost cells on boundary (?)
     
     return rundata
 

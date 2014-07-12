@@ -7,6 +7,9 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+#Display a friendly greeting yay
+echo Hi! Happy $(date +"%A").
+
 #Change shell prompt to FLASHING PURPLE DINNER!
 #export PS1='\e[5;35m[Dinner \W]\$ \e[m '
 

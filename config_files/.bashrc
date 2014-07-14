@@ -8,7 +8,7 @@ if [ -f /etc/bashrc ]; then
 fi
 
 #Display a friendly greeting yay
-echo Hi! Happy $(date +"%A").
+#echo Hi! Happy $(date +"%A").
 
 #Change shell prompt to FLASHING PURPLE DINNER!
 #export PS1='\e[5;35m[Dinner \W]\$ \e[m '
@@ -18,6 +18,11 @@ export PS1='\e[1;35m[\u@\h \W]\$ \e[m '
 
 #Shortcut directories for convenience
 export SURF='clawpack-4.6.3/implicit_solvers/applications/2d/Surfactant'
+
+#Aliases
+alias sim='tmux a -t sim'
+alias surf='cd ~/$SURF'
+alias plots='cd ~/$SURF/_plots'
 
 #Setting up for simulations
 export PATH=/shared/local/sw/gcc/gcc-4.8.2/bin:/shared/local/sw/python/python-2.7/bin:$PATH

@@ -141,6 +141,7 @@ def setrun(claw_pkg='classic'):
     # Source split is the method it uses to do operator splitting
     # 1 inditcates 1st order splitting (Godunov)
     # 2 indicates 2nd order splitting (Strang)(more work but sometimes more accurate)
+    # Should be set to 1, since we're not using the Clawpack solver so this will make things slower
     clawdata.src_split = 1 
     clawdata.mbc = 2 # Number of ghost cells on boundary needed (need 2 for 4th order terms)
     

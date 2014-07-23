@@ -1,6 +1,7 @@
 subroutine apply_pde_operator(t, q, output)
 
 ! For the PDE q_t = g(q), calculates g(q).
+! g(q) here referes to the d/dx(flux)
 !
 ! Args:
 !   t: Time at which the operator is evaluated.
@@ -28,18 +29,24 @@ subroutine apply_pde_operator(t, q, output)
     double precision :: h_face, h_x, h_laplacian_x, g_face, g_x, surface_tension_x
     double precision :: h_y, h_laplacian_y, g_y, surface_tension_y
 
-
     call get_laplacian(q(:,:,1), h_laplacian)
     call compute_surface_tension(mx+2*mbc, my+2*mbc, q(:, :, 2), surface_tension)
 
-
+    !Jacobian-free Newton-Krylov method. See Claridge paper pg.7 (doesn't need Jacobian, quite)
+    !Computes the Jacobian*vector without having to explicitly create the Jacbobian matrix
+    
     !$omp parallel do private(ix, h_face, h_x, h_laplacian_x, g_face, g_x, surface_tension_x)
     do iy = 1, my
         do ix = 1, mx+1
-            h_face = (q(ix-1, iy, 1) + q(ix, iy, 1)) / 2.d0
-            h_x = (q(ix, iy, 1) - q(ix-1, iy, 1)) / dx
+        ! face(h value) needs avg of two adjacent cells
+        ! h_x (derivative) needs difference of two heights, divided by dx to give dh/dx
+        ! taking del of laplacian, so that needs difference/dx like h_x does
+            h_face = (q(ix-1, iy, 1) + q(ix, iy, 1)) / 2.d0 !face on the edge of the cell (at i - 1/2)
+            h_x = (q(ix, iy, 1) - q(ix-1, iy, 1)) / dx 
             h_laplacian_x = (h_laplacian(ix, iy) - h_laplacian(ix-1, iy)) / dx
     
+        ! g here is the surfactant concentration
+        ! q is the actual solution with q(:,:,1) = height, q(:,:,2) = surfactant conc
             g_face = (q(ix, iy, 2) + q(ix-1, iy, 2)) / 2.d0
             g_x = (q(ix, iy, 2) - q(ix-1, iy, 2)) / dx
             surface_tension_x = (surface_tension(ix, iy) - surface_tension(ix-1, iy)) / dx

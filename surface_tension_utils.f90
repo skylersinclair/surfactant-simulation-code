@@ -39,7 +39,7 @@ subroutine compute_surface_tension(nx, ny, surfactant, surface_tension)
             ! surface_tension(ix, iy) = (51.633d0 - 13.85d0*tanh(22.593d0*0.2d0*surfactant(ix,iy) - 3.2046d0))/27
             
             !DINA NEW EOS 1 (Piecewise Linear/Tanh)
-            if (EOS == 'm')
+            if (EOS == 'p')
               if (surfactant(ix,iy) < .4183d0) then
                  surface_tension(ix,iy) = 1.d0
               else if (surfactant(ix,iy) < 1.d0) then
@@ -84,10 +84,14 @@ subroutine compute_surface_tension_d1(nx, ny, surfactant, surface_tension_d1)
     do iy = 1, ny
         do ix = 1, nx
             !MULTILAYER EQU
-            !surface_tension_d1(ix, iy) = -3.d0 * mu * (1.d0 + mu * surfactant(ix, iy))**(-4)
+            if (EOS == 'm')
+              surface_tension_d1(ix, iy) = -3.d0 * mu * (1.d0 + mu * surfactant(ix, iy))**(-4)
+            end if
             
-            !LINEAR EQU
-            !surface_tension_d1(ix, iy) = -1.d0
+            !LINEAR 
+            if (EOS == 's')
+              surface_tension_d1(ix, iy) = -1.d0
+            end if
             
             !SHREYAS NEW EOS 1
             !surface_tension_d1(ix, iy) = -9.d0*(1/(cosh(9*(surfactant(ix, iy) - 0.5d0))))**2
@@ -95,17 +99,31 @@ subroutine compute_surface_tension_d1(nx, ny, surfactant, surface_tension_d1)
             !surface_tension_d1(ix, iy) = -2.31787d0*(1/(cosh(3.2046d0 - 4.5186d0*surfactant(ix, iy))))**2
             
             !DINA NEW EOS 1 (Piecewise Linear/Tanh)
-            if (surfactant(ix,iy) < .4183d0) then
-               surface_tension_d1(ix,iy) = 0.d0
-            else if (surfactant(ix,iy) < 1.d0) then
-               surface_tension_d1(ix,iy) = -.9693d0 * (1/(cosh(2.739d0 - 3.918d0 * surfactant(ix,iy))))**2
-            else
-               surface_tension_d1(ix,iy) = -.003798d0
+            if (EOS == 'p')
+              if (surfactant(ix,iy) < .4183d0) then
+                 surface_tension_d1(ix,iy) = 0.d0
+              else if (surfactant(ix,iy) < 1.d0) then
+                 surface_tension_d1(ix,iy) = -.9693d0 * (1/(cosh(2.739d0 - 3.918d0 * surfactant(ix,iy))))**2
+              else
+                 surface_tension_d1(ix,iy) = -.003798d0
+              end if
             end if
             
             !DINA NEW EOS 2 (Piecewise Linear)
+            if (EOS == 'l')
+              if (surfactant(ix,iy) < .4183d0) then
+                 surface_tension_d1(ix,iy) = (1.d0/63.d0)*(-0.2399d0)
+              else if (surfactant(ix,iy) < 1.d0) then
+                 surface_tension_d1(ix,iy) = (1.d0/63.d0)*(-43.44d0)
+              else
+                 surface_tension_d1(ix,iy) = (1.d0/63.d0)*(-0.2399d0)
+              end if
+            end if
             
             !DINA NEW EOS 3 (Tanh)
+            if (EOS == 't')
+              surface_tension_d1(ix,iy) = -1.027d0 * (1/(cosh(3.20d0 - 4.67d0 * surfactant(ix,iy))))**2
+            end if
             
         end do
     end do

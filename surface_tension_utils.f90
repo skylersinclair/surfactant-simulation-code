@@ -51,12 +51,20 @@ subroutine compute_surface_tension(nx, ny, surfactant, surface_tension)
             
             !DINA NEW EOS 2 (Piecewise Linear)
             if (EOS == 'l')
+              if (surfactant(ix,iy) < .4183d0) then
+                 surface_tension(ix,iy) = (1.d0/63.d0)*(63.0d0 - 0.2399d0 * surfactant(ix,iy))
+              else if (surfactant(ix,iy) < 1.d0) then
+                 surface_tension(ix,iy) =  (1.d0/63.d0)*(81.07d0 - 43.44d0 * surfactant(ix,iy))
+              else
+                 surface_tension(ix,iy) = (1.d0/63.d0)*(37.87d0 - 0.2399d0 * surfactant(ix,iy))
+              end if
             end if
             
             !DINA NEW EOS 3 (Tanh)
             if (EOS == 't')
-              surface_tension(ix,iy) = (1.d0/63.d0)*(13.85d0 * tanh(-22.59d0 * surfactant(ix,iy) + 3.20d0) + 51.13d0)
+              surface_tension(ix,iy) = (1.d0/63.d0)*(51.13d0 + 13.85d0 * tanh(3.20d0 - 4.67d0 * surfactant(ix,iy)))
             end if
+            
         end do
     end do
 end subroutine compute_surface_tension
@@ -75,11 +83,18 @@ subroutine compute_surface_tension_d1(nx, ny, surfactant, surface_tension_d1)
 
     do iy = 1, ny
         do ix = 1, nx
-            ! surface_tension_d1(ix, iy) = -3.d0 * mu * (1.d0 + mu * surfactant(ix, iy))**(-4)
-           ! surface_tension_d1(ix, iy) = -1.d0
+            !MULTILAYER EQU
+            !surface_tension_d1(ix, iy) = -3.d0 * mu * (1.d0 + mu * surfactant(ix, iy))**(-4)
+            
+            !LINEAR EQU
+            !surface_tension_d1(ix, iy) = -1.d0
+            
+            !SHREYAS NEW EOS 1
             !surface_tension_d1(ix, iy) = -9.d0*(1/(cosh(9*(surfactant(ix, iy) - 0.5d0))))**2
+            !SHREYAS NEW EOS 2
             !surface_tension_d1(ix, iy) = -2.31787d0*(1/(cosh(3.2046d0 - 4.5186d0*surfactant(ix, iy))))**2
-            !DINA NEW EOS 1 (LINEAR/TANH)
+            
+            !DINA NEW EOS 1 (Piecewise Linear/Tanh)
             if (surfactant(ix,iy) < .4183d0) then
                surface_tension_d1(ix,iy) = 0.d0
             else if (surfactant(ix,iy) < 1.d0) then
@@ -87,6 +102,11 @@ subroutine compute_surface_tension_d1(nx, ny, surfactant, surface_tension_d1)
             else
                surface_tension_d1(ix,iy) = -.003798d0
             end if
+            
+            !DINA NEW EOS 2 (Piecewise Linear)
+            
+            !DINA NEW EOS 3 (Tanh)
+            
         end do
     end do
 end subroutine compute_surface_tension_d1
